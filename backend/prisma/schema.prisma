@@ -8,23 +8,33 @@ datasource db {
 }
 
 model User {
-  id            Int     @id @default(autoincrement())
-  username      String  @unique
-  password      String
-  bio           String?
-  profilePicUrl String?
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
 
-  sentMessages     Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
+  conversationsA Conversation[] @relation("UserA")
+  conversationsB Conversation[] @relation("UserB")
+  messages       Message[]      @relation("UserMessages")
+}
+
+model Conversation {
+  id       Int       @id @default(autoincrement())
+  userAId  Int
+  userBId  Int
+  userA    User      @relation("UserA", fields: [userAId], references: [id])
+  userB    User      @relation("UserB", fields: [userBId], references: [id])
+  messages Message[]
+
+  @@unique([userAId, userBId])
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  content   String
-  timestamp DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  content        String
+  timestamp      DateTime @default(now())
+  authorId       Int
+  conversationId Int
 
-  senderId    Int
-  recipientId Int
-  sender      User @relation("SentMessages", fields: [senderId], references: [id])
-  recipient   User @relation("ReceivedMessages", fields: [recipientId], references: [id])
+  author       User         @relation("UserMessages", fields: [authorId], references: [id])
+  conversation Conversation @relation(fields: [conversationId], references: [id])
 }

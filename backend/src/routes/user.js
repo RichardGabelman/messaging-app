@@ -1,9 +1,11 @@
 const express = require("express");
-const { isLoggedIn } = require("../middlewares/authMiddleware");
 const { listUsers } = require("../controllers/userController");
+const { isLoggedIn } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", isLoggedIn, listUsers);
+router.use(isLoggedIn);
+
+router.get("/", listUsers);
 
 module.exports = router;

@@ -1,13 +1,16 @@
 const express = require("express");
 const apiRouter = require("./src/routes/api.js");
+const passport = require("passport");
 const cors = require("cors");
 
 require("dotenv").config();
+require("./src/config/passport.js");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 app.use(cors({ origin: "http://localhost:5173" }));
 

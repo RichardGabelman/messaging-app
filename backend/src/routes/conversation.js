@@ -1,6 +1,5 @@
 const express = require("express");
 const { isLoggedIn, isParticipant } = require("../middlewares/authMiddleware");
-const { user } = require("../db/prisma");
 const prisma = require("../db/prisma");
 
 const router = express.Router();

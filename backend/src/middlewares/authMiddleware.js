@@ -10,4 +10,29 @@ function isLoggedIn(req, res, next) {
   })(req, res, next);
 }
 
-module.exports = { isLoggedIn };
+async function isParticipant(req, res, next) {
+  const conversationId = parseInt(req.params.id);
+
+  try {
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+    });
+
+    if (!conversation) {
+      return res.status(404).json({ error: "Conversation not found" });
+    }
+
+    if (
+      conversation.userAId !== req.user.id &&
+      conversation.userBId !== req.user.id
+    ) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { isLoggedIn, isParticipant };

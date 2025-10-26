@@ -49,9 +49,27 @@ router.get("/with/:otherUserId", async (req, res, next) => {
   }
 });
 
-// // posts a new message in the conversation with CONVERSATION ID == :id
-// router.post("/:id/messages", isParticipant, async (req, res, next) => {
-//   res.status(501);
-// });
+// posts a new message in the conversation with CONVERSATION ID == :id
+router.post("/:id/messages", isParticipant, async (req, res, next) => {
+  const conversationId = parseInt(req.params.id);
+  const { content } = req.body;
+
+  try {
+    const message = await prisma.message.create({
+      data: {
+        content,
+        conversationId,
+        authorId: req.user.id
+      },
+      include: {
+        author: { select: { id: true, username: true } }
+      }
+    });
+
+    res.status(201).json(message);
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;

@@ -14,15 +14,6 @@ passport.use(
           id: true,
           username: true,
           password: true,
-          roles: {
-            select: {
-              role: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
         },
       });
 
@@ -36,8 +27,7 @@ passport.use(
         return done(null, false, { message: "Incorrect password" });
       }
 
-      const { password, ...safeUser } = user;
-      return done(null, safeUser);
+      return done(null, { id: user.id, username: user.username });
     } catch (err) {
       return done(err);
     }
@@ -57,15 +47,6 @@ passport.use(
         select: {
           id: true,
           username: true,
-          roles: {
-            select: {
-              role: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
         },
       });
 

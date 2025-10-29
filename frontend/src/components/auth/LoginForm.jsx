@@ -18,7 +18,7 @@ const LoginForm = () => {
 
     try {
       const response = isSignup
-        ? await api.signup(username, password)
+        ? await api.register(username, password)
         : await api.login(username, password);
 
       if (response.token) {

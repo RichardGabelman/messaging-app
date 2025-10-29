@@ -47,7 +47,11 @@ const ConversationView = ({ otherUserId, onBack }) => {
       setMessages(prev => [...prev, {
         id: newMessage.id,
         content: newMessage.content,
-        senderId: user.id,
+        authorId: user.id,
+        author: {
+          id: user.id,
+          username: user.username
+        },
         timestamp: newMessage.createdAt || new Date().toISOString()
       }]);
 

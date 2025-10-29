@@ -6,6 +6,7 @@ import MessageInput from './MessageInput';
 
 const ConversationView = ({ otherUserId, onBack }) => {
   const [messages, setMessages] = useState([]);
+  const [conversationId, setConversationId] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -13,17 +14,21 @@ const ConversationView = ({ otherUserId, onBack }) => {
   const { token, user } = useAuth();
 
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchConversation = async () => {
       setLoading(true);
       setError('');
 
       try {
-        const data = await api.getMessages(token, otherUserId);
-        setMessages(data.messages || data);
+        const conversation = await api.getConversation(token, otherUserId);
 
-        if (data.otherUser) {
-          setOtherUser(data.otherUser);
-        }
+        setConversationId(conversation.id);
+        setMessages(conversation.messages || []);
+
+        const other = conversation.userA.id === user.id 
+          ? conversation.userB 
+          : conversation.userA;
+        setOtherUser(other);
+
       } catch (err) {
         setError(err.message || 'Failed to load messages');
         console.error('Error fetching messages:', err);
@@ -32,19 +37,18 @@ const ConversationView = ({ otherUserId, onBack }) => {
       }
     };
 
-    fetchMessages();
-  }, [token, otherUserId]);
+    fetchConversation();
+  }, [token, otherUserId, user.id]);
 
   const handleSendMessage = async (content) => {
     try {
-      const newMessage = await api.sendMessage(token, otherUserId, content);
+      const newMessage = await api.sendMessage(token, conversationId, content);
 
       setMessages(prev => [...prev, {
         id: newMessage.id,
-        content,
+        content: newMessage.content,
         senderId: user.id,
-        recipientId: otherUserId,
-        timestamp: newMessage.timestamp
+        timestamp: newMessage.createdAt || new Date().toISOString()
       }]);
 
       return true;

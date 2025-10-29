@@ -10,7 +10,8 @@ const Message = ({ message, isOwn }) => {
         {message.content}
       </div>
       <div>
-        {formatTime(message.timestamp)}
+        <span className="message-author">{message.author?.username}</span>
+        <span className="message-time">{formatTime(message.timestamp)}</span>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ const MessageList = ({ messages, currentUserId }) => {
         <Message 
           key={message.id}
           message={message}
-          isOwn={message.senderId === currentUserId}
+          isOwn={message.authorId === currentUserId}
         />
       ))}
     </div>

@@ -15,7 +15,6 @@ router.post("/login", (req, res, next) => {
 
     const payload = {
       sub: user.id,
-      roles: user.roles.map((r) => r.role.name),
     };
     jwt.sign(
       payload,
@@ -23,7 +22,11 @@ router.post("/login", (req, res, next) => {
       { expiresIn: "7d" },
       (err, token) => {
         if (err) return next(err);
-        res.status(200).json({ token });
+        res.status(200).json({
+          token,
+          userId: user.id,
+          username: user.username,
+        });
       }
     );
   })(req, res, next);
@@ -56,7 +59,23 @@ router.post("/register", registerValidator, async (req, res, next) => {
       },
     });
 
-    res.status(201).json({ message: "User created successfully" });
+    const payload = {
+      sub: user.id,
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+      (err, token) => {
+        if (err) return next(err);
+        res.status(201).json({
+          token,
+          userId: user.id,
+          username: user.username,
+        });
+      }
+    );
   } catch (err) {
     next(err);
   }

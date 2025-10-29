@@ -23,21 +23,30 @@ export const api = {
     });
     return res.json();
   },
-  getMessages: async (token, otherUserId) => {
-    const res = await fetch(`${API_BASE}/messages/${otherUserId}`, {
+  getConversation: async (token, otherUserId) => {
+    const res = await fetch(`${API_BASE}/conversations/with/${otherUserId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
     return res.json();
   },
-  sendMessage: async (token, recipientId, content) => {
-    const res = await fetch(`${API_BASE}/messages`, {
+  sendMessage: async (token, conversationId, content) => {
+    const res = await fetch(`${API_BASE}/conversations/${conversationId}/messages`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ recipientId, content }),
+      body: JSON.stringify({ content }),
     });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    
     return res.json();
   },
 };

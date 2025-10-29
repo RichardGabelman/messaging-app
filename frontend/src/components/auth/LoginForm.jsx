@@ -18,7 +18,11 @@ const LoginForm = () => {
 
     try {
       const response = isSignup
+<<<<<<< HEAD
         ? await api.register(username, password)
+=======
+        ? await api.signup(username, password)
+>>>>>>> 576081d56c06ac77713664f45bcbd9489225fb2e
         : await api.login(username, password);
 
       if (response.token) {
@@ -27,8 +31,12 @@ const LoginForm = () => {
         setError(response.error || "Authentication failed");
       }
     } catch (err) {
+<<<<<<< HEAD
       setError(err.message || "Something went wrong. Please try again.");
       console.error('Login error:', err);
+=======
+      setError("Something went wrong. Please try again.");
+>>>>>>> 576081d56c06ac77713664f45bcbd9489225fb2e
     } finally {
       setLoading(false);
     }

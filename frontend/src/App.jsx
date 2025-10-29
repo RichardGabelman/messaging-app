@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Layout from "./components/layout/Layout";
 import LoginForm from "./components/auth/LoginForm";
 import UserList from "./components/users/UserList";
+import ConversationView from "./components/conversation/ConversationView";
 
 function AppContent() {
   const { user, loading } = useAuth();
